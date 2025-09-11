@@ -16,22 +16,12 @@ async fn main() -> Result<(), Box<dyn Error>> {
             let mut buf = [0; 1024];
 
             loop {
-                let n = match stream.read(&mut buf).await {
-                    Ok(0) => return,
-                    Ok(n) => n,
-                    Err(e) => {
-                        eprintln!("Fallo al leer los bytes: {:?}", e);
-                        return;
-                    }
-                };
+                stream.read(&mut buf).await;
 
-                let s: String = String::from_utf8(buf.to_vec()).expect("Fallo");
+                let command: String = String::from_utf8(buf.to_vec()).expect("Fallo");
 
-                println!("{}", s);
-
-                if let Err(e) = stream.write_all(&buf[0..n]).await {
-                    eprintln!("Fallo en escribir: {:?}", e);
-                    return;
+                if command == "quit" {
+                    println!("Server closing...");
                 }
             }
         });
