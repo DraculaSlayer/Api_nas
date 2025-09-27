@@ -58,6 +58,10 @@ fn conection_manager(mut stream: TcpStream) -> std::io::Result<()> {
     while !check {
         stream.read(&mut file_buf);
 
+        let mut number_chunk = 1;
+
+        println!("Chunk {}: {:?}", number_chunk, file_buf);
+
         for i in file_buf {
            
             if i == 0 { break; }
@@ -68,8 +72,9 @@ fn conection_manager(mut stream: TcpStream) -> std::io::Result<()> {
             if size_file_client == size_file_server {
                 check = true;
             }
-            println!("{}, {}, {}", check, size_file_server, i);
         }
+
+        number_chunk += 1;
     }
 
     Ok(())

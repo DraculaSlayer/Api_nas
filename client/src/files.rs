@@ -30,6 +30,10 @@ impl Files {
             }
 
             stream.write_all(&self.buf_arr[..n]);
+
+            let mut number_chunk = 1;
+
+            println!("Chunk {}: {:?}", number_chunk, self.buf_arr);
         }
 
         Ok(())
